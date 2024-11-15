@@ -1,11 +1,6 @@
 return {
 
     {
-        'nvim-lualine/lualine.nvim',
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
-    },
-
-    {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
     },
@@ -31,21 +26,7 @@ return {
             -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
             -- - sd'   - [S]urround [D]elete [']quotes
             -- - sr)'  - [S]urround [R]eplace [)] [']
-            require('mini.surround').setup()
-
-            -- Simple and easy statusline.
-            --  You could remove this setup call if you don't like it,
-            --  and try some other statusline plugin
-            local statusline = require 'mini.statusline'
-            statusline.setup()
-
-            -- You can confiure sections in the statusline by overriding their
-            -- default behavior. For example, here we disable the section for
-            -- cursor information because line numbers are already enabled
-            ---@diagnostic disable-next-line: duplicate-set-field
-            statusline.section_location = function()
-                return ''
-            end
+            -- require('mini.surround').setup()
 
             -- ... and there is more!
             --  Check out: https://github.com/echasnovski/mini.nvim

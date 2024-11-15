@@ -1,7 +1,19 @@
-vim.keymap.set('n', '<C-k>', '<cmd>cnext<CR>zz')
-vim.keymap.set('n', '<C-j>', '<cmd>cprev<CR>zz')
-vim.keymap.set('n', '<leader>k', '<cmd>lnext<CR>zz')
-vim.keymap.set('n', '<leader>j', '<cmd>lprev<CR>zz')
+
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('moellh', {}),
+    callback = function(e)
+        local opts = { buffer = e.buf }
+
+        -- show diagnostics of current line
+        vim.keymap.set('n', '<leader>ll', function()
+            vim.diagnostic.open_float()
+        end, {
+            buffer = e.buf,
+            desc = "Show diagnostics of current line",
+        })
+
+    end
+})
 
 vim.diagnostic.config {
     -- update_in_insert = true,

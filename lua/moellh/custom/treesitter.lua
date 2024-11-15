@@ -45,8 +45,10 @@ return {
 
                 sync_install = false,
 
+                ignore_install = {},
+
                 indent = {
-                    enable = true,
+                    enable = false,
                 },
 
                 -- highlights code more precisely
@@ -64,6 +66,8 @@ return {
                         node_decremental = '<leader>sd',
                     },
                 },
+
+                modules = {},
 
                 -- keybinds for selection based on language-specific textobjects
                 textobjects = {

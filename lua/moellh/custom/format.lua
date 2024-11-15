@@ -1,46 +1,69 @@
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format) -- format manually
+-- remove trailing whitespaces on write
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+    group = "moellh",
+    pattern = "*",
+    command = [[%s/\s\+$//e]],
+})
 
 return {
 
     {
-        'stevearc/conform.nvim',
+        --[[
+        formatting with external formatters
+        --]]
+
+        "stevearc/conform.nvim",
 
         opts = {
             notify_on_error = false,
 
-            -- do not format automatically
-            --[[ format_on_save = {
-                timeout_ms = 3000,
-                lsp_fallback = true,
-            }, ]]
-
             formatters_by_ft = {
-                lua = { 'stylua' },
-                python = { 'isort', 'black' },
-                javascript = { { 'prettierd', 'prettier' } },
-                java = { 'google-java-format' },
-                cpp = { 'clang-format' },
-                bash = { 'shfmt' },
+                lua = { "stylua" },
+                python = { "isort", "black" },
+                javascript = { { "prettierd", "prettier" } },
+                java = { "google-java-format" },
+                cpp = { "clang-format" },
+                cuda = { "clang-format" },
+                bash = { "shfmt" },
+                bib = { "bibtex-tidy" },
             },
 
             formatters = {
                 black = {
-                    prepend_args = { '--line-length', '120' },
+                    prepend_args = { "--line-length", "80" },
                 },
-                ['clang-format'] = {
+                ["bibtex-tidy"] = {
                     args = {
-                        '--style',
-                        '{BasedOnStyle: google, ColumnLimit: 120, IndentWidth: 4 }',
+                        "--curly",
+                        "--wrap=80",
+                        "--space=4",
+                        "--blank-lines",
                     },
                 },
+            },
+        },
+
+        keys = {
+            {
+                -- Customize or remove this keymap to your liking
+                "<leader>f",
+                function()
+                    require("conform").format { async = true }
+                end,
+                mode = "",
+                desc = "Format buffer",
             },
         },
     },
 
     {
-        'zapling/mason-conform.nvim',
+        --[[
+        install formatters using mason
+        --]]
+
+        "zapling/mason-conform.nvim",
         config = function()
-            require('mason-conform').setup()
+            require("mason-conform").setup()
         end,
     },
 }

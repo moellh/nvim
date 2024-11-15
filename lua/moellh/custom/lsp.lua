@@ -1,112 +1,130 @@
-vim.api.nvim_create_autocmd('LspAttach', {
-    group = vim.api.nvim_create_augroup('moellh', {}),
+--[[
+LSP setup
+--]]
+
+-- add keymaps on attach of an lsp to current buffer
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("moellh", { clear = false }),
     callback = function(e)
         local opts = { buffer = e.buf }
 
-        -- goto definition of current token
-        vim.keymap.set('n', 'gd', function()
+        -- goto definition
+        vim.keymap.set("n", "<leader>ld", function()
             vim.lsp.buf.definition()
         end, opts)
 
-        -- show information of current token
-        vim.keymap.set('n', 'K', function()
+        -- hover
+        vim.keymap.set("n", "<leader>lh", function()
             vim.lsp.buf.hover()
         end, opts)
 
-        -- lists query of current workspace
-        vim.keymap.set('n', '<leader>vws', function()
+        -- query symbols of workspace to quickfix window
+        vim.keymap.set("n", "<leader>ls", function()
             vim.lsp.buf.workspace_symbol()
         end, opts)
 
-        -- show diagnostics of current line
-        vim.keymap.set('n', '<leader>vd', function()
-            vim.diagnostic.open_float()
-        end, opts)
-
         -- calls code actions of current line
-        vim.keymap.set('n', '<leader>vca', function()
+        vim.keymap.set("n", "<leader>la", function()
             vim.lsp.buf.code_action()
         end, opts)
 
         -- quicklists references of current token
-        vim.keymap.set('n', '<leader>vrr', function()
+        vim.keymap.set("n", "<leader>vrr", function()
             vim.lsp.buf.references()
         end, opts)
 
         -- rename current token
-        vim.keymap.set('n', '<leader>vrn', function()
+        vim.keymap.set("n", "<leader>lr", function()
             vim.lsp.buf.rename()
         end, opts)
 
         -- displays function name, parameters and return type
-        vim.keymap.set('i', '<C-h>', function()
+        vim.keymap.set("i", "<C-h>", function()
             vim.lsp.buf.signature_help()
         end, opts)
 
         -- show next diagnostic
-        vim.keymap.set('n', '[d', function()
+        vim.keymap.set("n", "[d", function()
             vim.diagnostic.goto_next()
         end, opts)
 
         -- show previous diagnostic
-        vim.keymap.set('n', ']d', function()
+        vim.keymap.set("n", "]d", function()
             vim.diagnostic.goto_prev()
         end, opts)
+
+        vim.keymap.set("n", "<leader>lsl", "<CMD>LspStop ltex<CR>", opts)
+
+        vim.keymap.set("n", "<leader>qc", ":cclose<CR>", opts)
     end,
 })
 
 return {
 
-    'williamboman/mason-lspconfig.nvim',
+    "williamboman/mason-lspconfig.nvim",
 
     {
-        'folke/neodev.nvim',
-        opts = {},
+        --[[
+        lsp features for neovim configuration
+        --]]
+
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {
+            library = {
+                -- Load luvit types when the `vim.uv` word is found
+                { path = "luvit-meta/library", words = { "vim%.uv" } },
+            },
+        },
     },
 
     {
-        'neovim/nvim-lspconfig',
+        -- required by lazydev.nvim
+        "Bilal2453/luvit-meta",
+        lazy = true,
+    },
+
+    {
+        "neovim/nvim-lspconfig",
 
         dependencies = {
-            'williamboman/mason.nvim',
-            'williamboman/mason-lspconfig.nvim',
+            "williamboman/mason.nvim",
+            "williamboman/mason-lspconfig.nvim",
         },
 
         config = function()
-            require('mason').setup()
-            require('mason-lspconfig').setup {
+            require("mason").setup()
+            require("mason-lspconfig").setup {
                 ensure_installed = {
-                    'pyright', -- python
-                    'lua_ls', -- lua
-                    'jdtls', -- java
-                    'ts_ls', -- js, ts
-                    'marksman', -- markdown
-                    'texlab', -- latex
-                    'ltex', -- latex
-                    'bashls', -- bash
-                    'clangd', -- cpp
-                    'rust_analyzer', -- rust
-                    'bashls', -- bash
+                    "pyright", -- python
+                    "lua_ls", -- lua
+                    "jdtls", -- java
+                    "ts_ls", -- js, ts
+                    "marksman", -- markdown
+                    "texlab", -- latex
+                    "ltex", -- latex
+                    "bashls", -- bash
+                    "clangd", -- cpp
+                    "rust_analyzer", -- rust
+                    "bashls", -- bash
                 },
             }
 
-            require('neodev').setup {}
-
-            local lspconfig = require 'lspconfig'
+            local lspconfig = require "lspconfig"
 
             -- python
             lspconfig.pyright.setup {
-                filetypes = { 'python' },
+                filetypes = { "python" },
             }
             lspconfig.lua_ls.setup { -- lua
                 settings = {
                     Lua = {
                         completion = {
-                            callSnippet = 'Replace',
+                            callSnippet = "Replace",
                         },
                         diagnostics = {
                             -- Get the language server to recognize the `vim` global
-                            globals = { 'vim' },
+                            globals = { "vim" },
                         },
                     },
                 },
@@ -116,24 +134,52 @@ return {
             lspconfig.marksman.setup {} -- markdown
 
             -- latex
-            lspconfig.texlab.setup {}
+            lspconfig.texlab.setup {
+                root_dir = lspconfig.util.root_pattern(
+                    ".latexmkrc",
+                    ".texlabroot",
+                    "texlabroot",
+                    "Tectonic.toml",
+                    "Makefile",
+                    ".git"
+                ),
+            }
             lspconfig.ltex.setup {}
 
             lspconfig.bashls.setup {}
 
-            lspconfig.clangd.setup {}
+            lspconfig.clangd.setup {
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--clang-tidy",
+                    "--log=verbose",
+                    "--limit-results=0",
+                    "--suggest-missing-includes",
+                },
+                init_options = {
+                    fallbackFlags = { "-std=c++17" },
+                },
+                root_dir = lspconfig.util.root_pattern(
+                    "compile_commands.json",
+                    ".clangd",
+                    ".clang-format",
+                    ".git"
+                ),
+            }
         end,
     },
 
-    'mfussenegger/nvim-jdtls',
+    "mfussenegger/nvim-jdtls",
 
     {
-        'barreiroleo/ltex_extra.nvim',
-        ft = { 'markdown', 'tex', 'bib' },
-        dependencies = { 'neovim/nvim-lspconfig' },
+        "barreiroleo/ltex_extra.nvim",
+        ft = { "markdown", "tex", "bib" },
+        dependencies = { "neovim/nvim-lspconfig" },
         -- yes, you can use the opts field, just I'm showing the setup explicitly
         config = function()
-            require('ltex_extra').setup {
+            require("ltex_extra").setup {
+                load_langs = { "en-US", "de-DE" },
                 -- your_ltex_extra_opts,
                 server_opts = {
                     -- capabilities = your_capabilities,
