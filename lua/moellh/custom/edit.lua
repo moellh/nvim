@@ -35,6 +35,9 @@ vim.keymap.set(
     [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]]
 )
 
+-- copy entire file content to clipboard
+vim.keymap.set("n", "<leader>yy", [[:%y+<CR>]])
+
 return {
 
     "tpope/vim-sleuth", -- auto-detect tabstop & shiftwidth
@@ -162,5 +165,10 @@ return {
                 },
             }
         end,
+    },
+
+    {
+        "danymat/neogen",
+        config = true,
     },
 }

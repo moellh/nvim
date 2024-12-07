@@ -27,6 +27,10 @@ package.path = package.path
     .. vim.fn.expand "$HOME"
     .. "/.luarocks/share/lua/5.1/?.lua"
 
+-- keymaps for zooming in and out of splits
+vim.keymap.set("n", "<leader>zi", ":tab split<CR>", {})
+vim.keymap.set("n", "<leader>zo", ":tab close<CR>", {})
+
 return {
 
     {
@@ -115,7 +119,7 @@ return {
         end,
     },
 
-    "j-hui/fidget.nvim",
+    "arkav/lualine-lsp-progress",
 
     {
         "3rd/image.nvim",
@@ -178,7 +182,7 @@ return {
                     lualine_a = { "mode" },
                     lualine_b = { "branch", "diff", "diagnostics" },
                     lualine_c = { "filename" },
-                    lualine_x = { "encoding", "fileformat", "filetype" },
+                    lualine_x = { "lsp_progress", "encoding", "fileformat", "filetype" },
                     lualine_y = { "progress" },
                     lualine_z = { "location" },
                 },
@@ -196,5 +200,11 @@ return {
                 extensions = {},
             }
         end,
+    },
+
+    {
+        "Fildo7525/pretty_hover",
+        event = "LspAttach",
+        opts = {},
     },
 }

@@ -2,6 +2,9 @@
 LSP setup
 --]]
 
+-- else ~/.local/state/nvim/lsp.log will grow to huge size
+vim.lsp.set_log_level("off")
+
 -- add keymaps on attach of an lsp to current buffer
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("moellh", { clear = false }),
@@ -13,9 +16,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
             vim.lsp.buf.definition()
         end, opts)
 
+        -- goto definition
+        vim.keymap.set("n", "<leader>li", function()
+            vim.lsp.buf.implementation()
+        end, opts)
+
         -- hover
-        vim.keymap.set("n", "<leader>lh", function()
-            vim.lsp.buf.hover()
+        local pretty_hover = require("pretty_hover")
+        vim.keymap.set("n", "K", function()
+            pretty_hover.hover()
         end, opts)
 
         -- query symbols of workspace to quickfix window
@@ -29,12 +38,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, opts)
 
         -- quicklists references of current token
-        vim.keymap.set("n", "<leader>vrr", function()
+        vim.keymap.set("n", "<leader>lr", function()
             vim.lsp.buf.references()
         end, opts)
 
         -- rename current token
-        vim.keymap.set("n", "<leader>lr", function()
+        vim.keymap.set("n", "<leader>lm", function()
             vim.lsp.buf.rename()
         end, opts)
 
@@ -45,12 +54,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         -- show next diagnostic
         vim.keymap.set("n", "[d", function()
-            vim.diagnostic.goto_next()
+            vim.diagnostic.goto_prev()
         end, opts)
 
         -- show previous diagnostic
         vim.keymap.set("n", "]d", function()
-            vim.diagnostic.goto_prev()
+            vim.diagnostic.goto_next()
         end, opts)
 
         vim.keymap.set("n", "<leader>lsl", "<CMD>LspStop ltex<CR>", opts)
@@ -129,7 +138,6 @@ return {
                     },
                 },
             }
-            lspconfig.jdtls.setup {} -- java
             lspconfig.ts_ls.setup {} -- js, ts
             lspconfig.marksman.setup {} -- markdown
 
@@ -159,6 +167,7 @@ return {
                 },
                 init_options = {
                     fallbackFlags = { "-std=c++17" },
+                    clangdFileStatus = true,
                 },
                 root_dir = lspconfig.util.root_pattern(
                     "compile_commands.json",
