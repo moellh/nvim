@@ -98,6 +98,7 @@ return {
         config = function()
             require("mason").setup()
             require("mason-lspconfig").setup {
+                automatic_installation = true,
                 ensure_installed = {
                     "pyright", -- python
                     "lua_ls", -- lua
@@ -110,6 +111,7 @@ return {
                     "clangd", -- cpp
                     "rust_analyzer", -- rust
                     "bashls", -- bash
+                    "cmake", -- cmake
                 },
             }
 
@@ -170,6 +172,8 @@ return {
                     ".git"
                 ),
             }
+
+            lspconfig.cmake.setup {}
         end,
     },
 
