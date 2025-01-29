@@ -1,3 +1,5 @@
+vim.opt.wrap = true
+
 local config = {
     cmd = { os.getenv "HOME" .. "/.local/share/nvim/mason/bin/jdtls" },
     root_dir = vim.fs.dirname(

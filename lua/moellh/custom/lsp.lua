@@ -57,8 +57,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end, opts)
 
         vim.keymap.set("n", "<leader>lsl", "<CMD>LspStop ltex<CR>", opts)
-
-        vim.keymap.set("n", "<leader>qc", ":cclose<CR>", opts)
     end,
 })
 
