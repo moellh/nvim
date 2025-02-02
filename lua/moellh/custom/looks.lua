@@ -182,7 +182,12 @@ return {
                     lualine_a = { "mode" },
                     lualine_b = { "branch", "diff", "diagnostics" },
                     lualine_c = { "filename" },
-                    lualine_x = { "lsp_progress", "encoding", "fileformat", "filetype" },
+                    lualine_x = {
+                        "lsp_progress",
+                        "encoding",
+                        "fileformat",
+                        "filetype",
+                    },
                     lualine_y = { "progress" },
                     lualine_z = { "location" },
                 },
@@ -206,5 +211,9 @@ return {
         "Fildo7525/pretty_hover",
         event = "LspAttach",
         opts = {},
+    },
+
+    {
+        "norcalli/nvim-colorizer.lua",
     },
 }

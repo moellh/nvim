@@ -110,6 +110,7 @@ return {
                     "rust_analyzer", -- rust
                     "bashls", -- bash
                     "cmake", -- cmake
+                    "html", -- html
                 },
             }
 
@@ -172,6 +173,8 @@ return {
             }
 
             lspconfig.cmake.setup {}
+
+            lspconfig.html.setup {}
         end,
     },
 
