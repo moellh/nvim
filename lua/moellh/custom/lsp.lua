@@ -159,6 +159,9 @@ return {
                     "--log=verbose",
                     "--limit-results=0",
                     "--suggest-missing-includes",
+                    "--function-arg-placeholders",
+                    "--all-scopes-completion",
+                    "--completion-style=bundled",
                 },
                 init_options = {
                     fallbackFlags = { "-std=c++17" },
