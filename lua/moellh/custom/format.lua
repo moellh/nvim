@@ -1,8 +1,12 @@
--- remove trailing whitespaces on write
+-- remove trailing whitespaces on write, without moving cursor there
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     group = "moellh",
     pattern = "*",
-    command = [[%s/\s\+$//e]],
+    callback = function()
+        local view = vim.fn.winsaveview()
+        vim.cmd [[%s/\s\+$//e]]
+        vim.fn.winrestview(view)
+    end
 })
 
 return {
