@@ -34,12 +34,12 @@ return {
 
             formatters = {
                 black = {
-                    prepend_args = { "--line-length", "80" },
+                    prepend_args = { "--line-length", "120" },
                 },
                 ["bibtex-tidy"] = {
                     args = {
                         "--curly",
-                        "--wrap=80",
+                        "--wrap=120",
                         "--space=4",
                         "--blank-lines",
                     },
