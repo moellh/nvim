@@ -3,7 +3,7 @@ LSP setup
 --]]
 
 -- else ~/.local/state/nvim/lsp.log will grow to huge size
-vim.lsp.set_log_level "off"
+-- vim.lsp.set_log_level "off"
 
 -- add keymaps on attach of an lsp to current buffer
 vim.api.nvim_create_autocmd("LspAttach", {
