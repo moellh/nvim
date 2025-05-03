@@ -119,8 +119,6 @@ return {
         end,
     },
 
-    "arkav/lualine-lsp-progress",
-
     {
         "3rd/image.nvim",
         config = function()
@@ -155,9 +153,18 @@ return {
     },
 
     {
+        "SmiteshP/nvim-navic",
+        dependencies = { "neovim/nvim-lspconfig" },
+    },
+
+    {
         "nvim-lualine/lualine.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            "SmiteshP/nvim-navic",
+        },
         config = function()
+            local navic = require "nvim-navic"
             require("lualine").setup {
                 options = {
                     icons_enabled = true,
@@ -170,7 +177,6 @@ return {
                     },
                     ignore_focus = {},
                     always_divide_middle = true,
-                    always_show_tabline = true,
                     globalstatus = false,
                     refresh = {
                         statusline = 100,
@@ -181,27 +187,16 @@ return {
                 sections = {
                     lualine_a = { "mode" },
                     lualine_b = { "branch", "diff", "diagnostics" },
-                    lualine_c = { "filename" },
-                    lualine_x = {
-                        "lsp_progress",
-                        "encoding",
-                        "fileformat",
-                        "filetype",
+                    lualine_c = {
+                        function()
+                            return navic.get_location()
+                        end,
                     },
+                    lualine_x = { "filename" },
                     lualine_y = { "progress" },
                     lualine_z = { "location" },
                 },
-                inactive_sections = {
-                    lualine_a = {},
-                    lualine_b = {},
-                    lualine_c = { "filename" },
-                    lualine_x = { "location" },
-                    lualine_y = {},
-                    lualine_z = {},
-                },
                 tabline = {},
-                winbar = {},
-                inactive_winbar = {},
                 extensions = {},
             }
         end,
