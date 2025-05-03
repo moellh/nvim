@@ -91,6 +91,7 @@ return {
         dependencies = {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
+            "nvim-lua/lsp-status.nvim",
         },
 
         config = function()
@@ -115,10 +116,14 @@ return {
             }
 
             local lspconfig = require "lspconfig"
+            local navic = require "nvim-navic"
 
             -- python
             lspconfig.pyright.setup {
                 filetypes = { "python" },
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
             }
             lspconfig.lua_ls.setup { -- lua
                 settings = {
@@ -132,9 +137,20 @@ return {
                         },
                     },
                 },
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
             }
-            lspconfig.ts_ls.setup {} -- js, ts
-            lspconfig.marksman.setup {} -- markdown
+            lspconfig.ts_ls.setup {
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
+            } -- js, ts
+            lspconfig.marksman.setup {
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
+            } -- markdown
 
             -- latex
             lspconfig.texlab.setup {
@@ -147,9 +163,14 @@ return {
                     ".git"
                 ),
             }
+
             lspconfig.ltex.setup {}
 
-            lspconfig.bashls.setup {}
+            lspconfig.bashls.setup {
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
+            }
 
             lspconfig.clangd.setup {
                 cmd = {
@@ -173,6 +194,9 @@ return {
                     ".clang-format",
                     ".git"
                 ),
+                on_attach = function(client, bufnr)
+                    navic.attach(client, bufnr)
+                end,
             }
 
             lspconfig.cmake.setup {}
