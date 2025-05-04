@@ -30,6 +30,7 @@ return {
                 cuda = { "clang-format" },
                 bash = { "shfmt" },
                 bib = { "bibtex-tidy" },
+                rust = { "rustfmt" },
             },
 
             formatters = {
