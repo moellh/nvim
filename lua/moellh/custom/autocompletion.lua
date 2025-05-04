@@ -69,11 +69,11 @@ return {
 
                     -- jump to next placeholder
                     -- NOTE: bad keymap
-                    -- ['<C-l>'] = cmp.mapping(function()
-                    --     if luasnip.expand_or_locally_jumpable() then
-                    --         luasnip.expand_or_jump()
-                    --     end
-                    -- end, { 'i', 's' }), -- in insert or select mode
+                    ['<C-l>'] = cmp.mapping(function()
+                        if luasnip.expand_or_locally_jumpable() then
+                            luasnip.expand_or_jump()
+                        end
+                    end, { 'i', 's' }), -- in insert or select mode
 
                     -- jump to previous placeholder
                     ['<C-h>'] = cmp.mapping(function()
@@ -85,6 +85,7 @@ return {
 
                 -- source cmp with lsp, snippets, path
                 sources = {
+                    { name = 'copilot' },
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
                     { name = 'buffer' },

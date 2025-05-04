@@ -4,15 +4,11 @@ return {
         "yetone/avante.nvim",
 
         event = "VeryLazy",
-        lazy = false,
         version = false, -- get latest updates
 
         opts = {
             provider = "copilot",
             auto_suggestions_provider = nil, -- use other plugin for auto-suggestions
-            copilot = {
-                max_tokens = 4096,
-            },
             behaviour = {
                 auto_suggestions = false, -- use other plugin for auto-suggestions
                 auto_set_highlight_group = true,
@@ -134,7 +130,6 @@ return {
                 },
             },
             {
-                -- Make sure to set this up properly if you have lazy=true
                 "MeanderingProgrammer/render-markdown.nvim",
                 opts = {
                     file_types = { "markdown", "Avante" },
@@ -150,10 +145,17 @@ return {
         event = "InsertEnter",
         config = function()
             require("copilot").setup {
-                suggestion = {
-                    auto_trigger = true,
-                },
+                suggestion = { enabled = false },
+                panel = { enabled = false },
             }
         end,
     },
+
+    {
+        "zbirenbaum/copilot-cmp",
+        config = function()
+            require("copilot_cmp").setup()
+        end,
+    },
+
 }
