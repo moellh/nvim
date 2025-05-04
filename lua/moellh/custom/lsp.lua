@@ -1,83 +1,24 @@
---[[
-LSP setup
---]]
-
 -- else ~/.local/state/nvim/lsp.log will grow to huge size
 -- vim.lsp.set_log_level "off"
 
--- add keymaps on attach of an lsp to current buffer
+-- NOTE: uncomment one day
+-- vim.lsp.enable "luals"
+
 vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("moellh", { clear = false }),
-    callback = function(e)
-        local opts = { buffer = e.buf }
+    callback = function(args)
+        local opts = { buffer = args.buf } -- apply to buffer
 
-        -- goto definition
-        vim.keymap.set("n", "<leader>ld", function()
-            vim.lsp.buf.definition()
-        end, opts)
+        vim.keymap.set("n", "grt", vim.lsp.buf.type_definition, opts)
+        vim.keymap.set("n", "grd", vim.lsp.buf.declaration, opts)
 
-        -- goto definition
-        vim.keymap.set("n", "<leader>li", function()
-            vim.lsp.buf.implementation()
-        end, opts)
-
-        -- query symbols of workspace to quickfix window
-        vim.keymap.set("n", "<leader>ls", function()
-            vim.lsp.buf.workspace_symbol()
-        end, opts)
-
-        -- calls code actions of current line
-        vim.keymap.set("n", "<leader>la", function()
-            vim.lsp.buf.code_action()
-        end, opts)
-
-        -- quicklists references of current token
-        vim.keymap.set("n", "<leader>lr", function()
-            vim.lsp.buf.references()
-        end, opts)
-
-        -- rename current token
-        vim.keymap.set("n", "<leader>lm", function()
-            vim.lsp.buf.rename()
-        end, opts)
-
-        -- displays function name, parameters and return type
-        vim.keymap.set("i", "<C-h>", function()
-            vim.lsp.buf.signature_help()
-        end, opts)
-
-        -- show next diagnostic
-        vim.keymap.set("n", "[d", function()
-            vim.diagnostic.goto_prev()
-        end, opts)
-
-        -- show previous diagnostic
-        vim.keymap.set("n", "]d", function()
-            vim.diagnostic.goto_next()
-        end, opts)
-
-        vim.keymap.set("n", "<leader>lsl", "<CMD>LspStop ltex<CR>", opts)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client:supports_method "textDocument/completion" then
+            vim.lsp.completion.enable(true, client.id, args.buf)
+        end
     end,
 })
 
 return {
-
-    "williamboman/mason-lspconfig.nvim",
-
-    {
-        --[[
-        lsp features for neovim configuration
-        --]]
-
-        "folke/lazydev.nvim",
-        ft = "lua",
-        opts = {
-            library = {
-                -- Load luvit types when the `vim.uv` word is found
-                { path = "luvit-meta/library", words = { "vim%.uv" } },
-            },
-        },
-    },
 
     {
         -- required by lazydev.nvim
@@ -97,34 +38,34 @@ return {
         config = function()
             require("mason").setup()
             require("mason-lspconfig").setup {
-                automatic_installation = true,
+                -- automatically install servers used in nvim-lspconfig
+                automatic_installation = { exclude = { "zls" } },
+                -- automatically install
                 ensure_installed = {
                     "pyright", -- python
                     "lua_ls", -- lua
                     "jdtls", -- java
-                    "ts_ls", -- js, ts
+                    "ts_ls", -- js / javascript, ts / typescript
                     "marksman", -- markdown
                     "texlab", -- latex
-                    "ltex", -- latex
+                    "ltex", -- spell checker
                     "bashls", -- bash
                     "clangd", -- cpp
                     "rust_analyzer", -- rust
-                    "bashls", -- bash
                     "cmake", -- cmake
                     "html", -- html
                 },
             }
-
             local lspconfig = require "lspconfig"
             local navic = require "nvim-navic"
 
-            -- python
-            lspconfig.pyright.setup {
+            lspconfig.pyright.setup { -- python
                 filetypes = { "python" },
                 on_attach = function(client, bufnr)
                     navic.attach(client, bufnr)
                 end,
             }
+
             lspconfig.lua_ls.setup { -- lua
                 settings = {
                     Lua = {
@@ -199,12 +140,17 @@ return {
                 end,
             }
 
+            lspconfig.rust_analyzer.setup {}
+
             lspconfig.cmake.setup {}
 
             lspconfig.html.setup {}
+
+            lspconfig.zls.setup {}
         end,
     },
 
+    -- TODO: fix java installation
     "mfussenegger/nvim-jdtls",
 
     {
