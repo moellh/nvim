@@ -9,7 +9,12 @@ vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 
-vim.keymap.set("n", "<leader>e", "<CMD>NvimTreeToggle<CR>", { desc = "Toggle file tree" })
+vim.keymap.set(
+    "n",
+    "<leader>e",
+    "<CMD>NvimTreeToggle<CR>",
+    { desc = "Toggle file tree" }
+)
 
 return {
 
@@ -21,7 +26,11 @@ return {
             "nvim-tree/nvim-web-devicons",
         },
         config = function()
-            require("nvim-tree").setup {}
+            require("nvim-tree").setup {
+                filters = {
+                    enable = false,
+                },
+            }
         end,
     },
 
