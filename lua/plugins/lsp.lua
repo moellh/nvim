@@ -54,6 +54,7 @@ return {
                     "rust_analyzer", -- rust
                     "cmake", -- cmake
                     "html", -- html
+                    "tinymist", -- typst
                 },
             }
             local lspconfig = require "lspconfig"
@@ -147,6 +148,14 @@ return {
             lspconfig.html.setup {}
 
             lspconfig.zls.setup {}
+
+            lspconfig.tinymist.setup {
+                settings = {
+                    formatterMode = "typstyle",
+                    exportPdf = "onType",
+                    semanticTokens = "disable",
+                },
+            }
         end,
     },
 
